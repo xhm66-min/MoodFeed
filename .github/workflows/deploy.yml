@@ -1,0 +1,55 @@
+# .github/workflows/deploy.yml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: ['main'] # 当推送到 main 分支时触发
+  workflow_dispatch: # 允许从 GitHub Actions 页面手动触发
+
+# 设置 GITHUB_TOKEN 的权限，以允许部署到 GitHub Pages[reference:4]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 只允许一个并发部署，跳过正在进行的运行，只运行最新的一个[reference:5]
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build
+        # 关键：设置 GITHUB_PAGES=true 环境变量，让 Vite 使用正确的 base 路径
+        run: npm run build
+        env:
+          GITHUB_PAGES: true
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist' # 上传 Vite 构建生成的 dist 文件夹
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
