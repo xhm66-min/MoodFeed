@@ -1,75 +1,41 @@
-# React + TypeScript + Vite
+# 情绪粒子记录仪
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+一款基于React+TypeScript 的AI情绪分析工具，通过流式对话，粒子动画，历史图表和知识图谱，帮助用于记录并可视化自己的情绪变化
 
-Currently, two official plugins are available:
+预览地址:https://xhm66-min.github.io/MoodFeed/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 功能特性
 
-## React Compiler
+情绪粒子引擎：100个动态粒子实时运动，根据情绪值（valence）和 唤醒度（Arousel）自动切换颜色与速度
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+AI流式分析：通过调用API，坠子输出Markdown格式的情绪分析报告
 
-## Expanding the ESLint configuration
+多轮对话：支持追问，AI自动记住上下文，形成连续对话
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+情绪历史趋势：使用Recharts绘制折线图，只换展示情绪变化轨迹
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+情绪知识图谱：基于vis-network的力导向图，节点大小代表情绪强度，颜色代表极性
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+全自动部署：通过github Actions自动构建并部署到github Pages
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 技术栈
 
-```
+| 类别 | 技术 |
+| :--- | :--- |
+| **核心框架** | React 19 + TypeScript |
+| **构建工具** | Vite |
+| **路由** | React Router v7 |
+| **样式** | Tailwind CSS（内联样式降级方案） |
+| **AI 接口** | 通义千问 Qwen API（OpenAI 兼容接口） |
+| **Markdown 渲染** | react-markdown + remark-gfm |
+| **数据可视化** | Recharts（折线图）、vis-network（知识图谱） |
+| **部署** | GitHub Pages + GitHub Actions |
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 克隆项目
+```bash
+git clone https://github.com/xhm66-min/MoodFeed.git
+cd MoodFeed
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 
-```
+
