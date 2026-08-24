@@ -1,27 +1,58 @@
 // 1. 从路由库中引入必要的组件
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, NavLink } from "react-router-dom";
 // 2. 引入刚才建好的两个页面
-import Home from './pages/Home';
-import About from './pages/About';
-import MoodFeed from './pages/MoodFeed';
+import Home from "./pages/Home";
+import About from "./pages/About";
+import MoodFeed from "./pages/MoodFeed";
 
 function App() {
   return (
     // BrowserRouter 是路由的“容器”（对标 Vue 的 createRouter 和 app.use）
     <BrowserRouter>
       {/* 页面整体布局 */}
-      <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-        
+      <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
         {/* ---------- 导航栏（对标 Vue Router 的 <router-link>） ---------- */}
-        <nav style={{ borderBottom: '1px solid #ccc', paddingBottom: '10px', marginBottom: '20px' }}>
+        <nav
+          style={{
+            borderBottom: "1px solid #ccc",
+            paddingBottom: "10px",
+            marginBottom: "20px",
+          }}
+        >
           {/* Link 标签就是超链接，to= 对应 Vue 的 :to= */}
-          <Link to="/" style={{ marginRight: '20px', textDecoration: 'none', fontWeight: 'bold' }}>
-            🏠 首页
-          </Link>
-          <Link to="/about" style={{ marginRight: '20px', textDecoration: 'none' }}>
-            📖 关于
-          </Link>
-          <Link to="/mood" className="...">🌊 情绪粒子</Link>
+          <NavLink
+            to="/about"
+            style={({ isActive }) => ({
+              marginRight: "20px",
+              textDecoration: "none",
+              color: isActive ? "#3b82f6" : "#000", // 激活时变色
+              fontWeight: isActive ? 700 : 500,
+            })}
+          >
+            关于
+          </NavLink>
+          <NavLink
+            to="/"
+            style={({ isActive }) => ({
+              marginRight: "20px",
+              textDecoration: "none",
+              color: isActive ? "#3b82f6" : "#000", // 激活时变色
+              fontWeight: isActive ? 700 : 500,
+            })}
+          >
+            首页
+          </NavLink>
+          <NavLink
+            to="/mood"
+            style={({ isActive }) => ({
+              marginRight: "20px",
+              textDecoration: "none",
+              color: isActive ? "#3b82f6" : "#000", // 激活时变色
+              fontWeight: isActive ? 700 : 500,
+            })}
+          >
+            情绪粒子
+          </NavLink>
         </nav>
 
         {/* ---------- 路由出口（对标 Vue Router 的 <router-view />） ---------- */}
@@ -32,7 +63,6 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/mood" element={<MoodFeed />} />
         </Routes>
-
       </div>
     </BrowserRouter>
   );
