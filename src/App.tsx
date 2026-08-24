@@ -1,5 +1,5 @@
 // 1. 从路由库中引入必要的组件
-import { BrowserRouter, Routes, Route, Link, NavLink } from "react-router-dom";
+import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
 // 2. 引入刚才建好的两个页面
 import Home from "./pages/Home";
 import About from "./pages/About";
