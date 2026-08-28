@@ -1,7 +1,7 @@
 // 任务面板的增删改查
 import { useState, useEffect, useCallback } from "react";
 
-interface Task {
+export interface Task {
   id: number;
   text: string;
   done: boolean;

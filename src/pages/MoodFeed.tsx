@@ -1,5 +1,5 @@
 // 情绪粒子
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import {
   analyzeEmotionStream,
   chatWithContext,
@@ -45,7 +45,10 @@ class Particle {
 function MoodFeed() {
   // 粒子画布
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  // 这个状态是干什么的？他什么时候变化？他变化后页面哪部分会刷新？
+  // 输入框，输入文字用于分析    当输入内容时   输入框
   const [inputText, setInputText] = useState("");
+  // 是否开始分析
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   //右上角的情绪数据
   const [moodLabel, setMoodLabel] = useState("等待输入...");
@@ -73,6 +76,7 @@ function MoodFeed() {
   const colorRef = useRef<string>("#4a8fd8");
   const speedRef = useRef<number>(0.5);
 
+  // 只需要初始化一次
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -108,7 +112,7 @@ function MoodFeed() {
         ctx.globalAlpha = 0.8;
         ctx.fill();
       }
-      //？不知道为什么requestAnimationFrame
+      //不知道为什么requestAnimationFrame
       animationRef.current = requestAnimationFrame(animate);
     };
     animate();
@@ -163,7 +167,7 @@ function MoodFeed() {
     setMoodLabel(label);
   };
 
-  const handleAnalyze = async () => {
+  const handleAnalyze = useCallback(async () => {
     if (!inputText.trim()) {
       alert("请先输入一段文字！");
       return;
@@ -171,11 +175,8 @@ function MoodFeed() {
     setIsAnalyzing(true);
     setIsStreaming(true);
     setReportContent("");
-    // 这里我确实不太理解，这个是追问的回答，如果重新开始新的对话应该是要删除上次的
     setConversation([]);
 
-    // onChunk     处理一个字一个的输出
-    // onComplete  处理完成后
     await analyzeEmotionStream(
       inputText,
       (chunk) => setReportContent((prev) => prev + chunk),
@@ -187,8 +188,6 @@ function MoodFeed() {
         setMoodLabel(
           `分析完成 (${report.emotion.valence.toFixed(2)}, ${report.emotion.arousal.toFixed(2)})`,
         );
-
-        // 保存历史记录时为什么要截断内容 ，我也不知道？字太多了吗？
         addRecord({
           timestamp: Date.now(),
           valence: report.emotion.valence,
@@ -199,7 +198,6 @@ function MoodFeed() {
             report.markdown.slice(0, 200) +
             (report.markdown.length > 200 ? "..." : ""),
         });
-
         setConversation((prev) => [
           ...prev,
           { role: "user", content: inputText },
@@ -215,7 +213,7 @@ function MoodFeed() {
         setReportContent("⚠️ AI 服务暂时不可用，已切换至本地模拟模式。");
       },
     );
-  };
+  }, [inputText,addRecord]); //  依赖数组
 
   //追问逻辑
   const handleFollowUp = async () => {
@@ -253,16 +251,19 @@ function MoodFeed() {
     );
   };
 
-  const chartData = [...records]
-    .sort((a, b) => a.timestamp - b.timestamp)
-    .map((r) => ({
-      time: new Date(r.timestamp).toLocaleTimeString("zh-CN", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      valence: r.valence,
-      arousal: r.arousal,
-    }));
+  // useMemo 当records发生改变的时候调用
+  const chartData = useMemo(() => {
+    return [...records]
+      .sort((a, b) => a.timestamp - b.timestamp)
+      .map((r) => ({
+        time: new Date(r.timestamp).toLocaleTimeString("zh-CN", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        valence: r.valence,
+        arousal: r.arousal,
+      }));
+  }, [records]);
 
   const handleClearAll = () => {
     clearHistory();

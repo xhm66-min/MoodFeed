@@ -1,8 +1,9 @@
 // 图谱
 import { useEffect, useRef } from "react";
 import { Network } from "vis-network";
-import { DataSet } from "vis-data";
 import type { EmotionRecord } from "../hooks/useEmotionHistory";
+
+import { DataSet } from "vis-data";
 
 interface EmotionGraphProps {
   records: EmotionRecord[];
@@ -15,8 +16,7 @@ export function EmotionGraph({ records }: EmotionGraphProps) {
   useEffect(() => {
     if (!containerRef.current || records.length < 2) return;
 
-    // 使用 any 临时绕过类型不兼容问题
-    const nodes = new DataSet<any>(
+    const nodes = new DataSet(
       records.map((r) => ({
         id: r.id,
         label: r.content.length > 10 ? r.content.slice(0, 10) + "…" : r.content,
@@ -36,7 +36,7 @@ export function EmotionGraph({ records }: EmotionGraphProps) {
       })),
     );
 
-    const edges = new DataSet<any>();
+    const edges = new DataSet();
     for (let i = 0; i < records.length - 1; i++) {
       const cur = records[i];
       const next = records[i + 1];
@@ -54,7 +54,7 @@ export function EmotionGraph({ records }: EmotionGraphProps) {
       }
     }
 
-    const options = {
+    const options= {
       nodes: {
         borderWidth: 2,
         shadow: true,
