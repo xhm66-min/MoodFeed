@@ -50,7 +50,7 @@ export function EmotionGraph({ records }: EmotionGraphProps) {
           color: "rgba(255,255,255,0.3)",
           width: 2,
           smooth: { type: "continuous" },
-        });
+        } as any);
       }
     }
 
